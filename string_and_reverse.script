@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# (Check) if output file exists and not empty than clear it in order to avoid append to previous data 
+check_file_exist_empty () { 
+	if [ -s string_and_reverse.output ]; then : > string_and_reverse.output; fi      
+	input_strings
+	return	
+}
+
+# ask user to input strings (in this case for testing purpose 4  but one can change it to a variable)
+input_strings () {
+	echo  " "
+	for i in {1..4}
+	do
+		read -p "Please input string number $i and than hit Enter: " string
+		echo $string >> string_and_reverse.output
+	done
+	reverse_strings
+	return
+}
+
+# reverse the already input strings 
+reverse_strings () {
+	cat string_and_reverse.output | rev >> string_and_reverse.output
+	beautify_file
+	return
+}
+
+# beautification of the output file (including bold letters) and presentation of the strings and their correspond
+# revers order 
+beautify_file () {
+	sed -i $((i+1))i"$(tput bold)\\n\nThese are the strings in reverse:\n\n$(tput init)" string_and_reverse.output
+        sed -i 1i"$(tput bold)\\n\nThese are the strings you input:\n\n$(tput init)" string_and_reverse.output
+	echo -e "\n" >> string_and_reverse.output
+	cat string_and_reverse.output
+	return
+}
+
+
+check_file_exist_empty
